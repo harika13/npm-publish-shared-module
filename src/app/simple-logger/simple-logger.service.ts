@@ -1,29 +1,42 @@
 import { Injectable } from '@angular/core';
 import { Severity } from './severity.enum';
 
+import { SimpleLoggerConfig } from './simple-logger.config';
+
 @Injectable()
 export class SimpleLoggerService {
-  @prop()
-  private source: string;
-  private severity: Severity;
-  private message: string;
-  private timestamp: Date;
 
-  constructor() { }
+    private source: string;
+    private severity: Severity;
+    private message: string;
+    private timestamp: Date;
+    private applicationName: string;
 
-  /**
-   * Use to create a log item in the application console.
-   * @param source 
-   * @param severity 
-   * @param message 
-   */
-  log(source: string, severity: Severity, message: string) {
-    this.source = source;
-    this.severity = severity;
-    this.message = message;
-    this.timestamp = new Date();
-    const msg = `${this.message}`;
+    /**
+     * The constructor for the [SimpleLoggerService].
+     * @param config Configuration information injected into the constructor.
+     */
+    constructor(
+        private config: SimpleLoggerConfig // injected by ng; constructor injection
+    ) {
+        if (config) {
+            this.applicationName = config.applicationName;
+        }
+    }
 
-    console.log(`${this.severity} from ${this.source}: ${msg} (${this.timestamp})`);
-  }
+    /**
+     * Use to create a log item in the application console.
+     * @param source
+     * @param severity
+     * @param message
+     */
+    log(source: string, severity: Severity, message: string) {
+        this.source = source;
+        this.severity = severity;
+        this.message = message;
+        this.timestamp = new Date();
+        const msg = `${this.message}`;
+
+        console.log(`${this.severity} from ${this.applicationName}.${this.source}: ${msg} (${this.timestamp})`);
+    }
 }
